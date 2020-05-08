@@ -7,7 +7,8 @@ Single variable global test functions – functions with single global minimum
 key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
-    (x -> x^2 - 1) => (-1.0, 0.0))
+    (x -> x^2 - 1) => (-1.0, 0.0),
+    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
 
 @testset "Single variable optimizers" begin
     @testset "General test for SVOptMethods" begin
