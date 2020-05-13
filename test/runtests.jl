@@ -38,7 +38,13 @@ svltf = Dict(
                 end
             
             end
-    end
+        end
+
+        @testset "exception" begin
+
+            @test_throws MethodError mopkg.SVPowell(x->1, 6)
+
+        end
     end
     @testset "Finite differences tests" begin
         for xval in [-π, -π/2, 0, π/2, π]
