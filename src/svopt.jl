@@ -1,6 +1,10 @@
 abstract type SVOptMethod end
 
 struct SVHillClimb <: SVOptMethod end
+struct SVGoldenSection <: SVOptMethod end
+
+"Parameter used in SVGoldenSection method"
+goldenRatio = (1 + sqrt(5)) / 2
 
 "Finite central difference"
 fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
@@ -49,3 +53,29 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
     return fn, s
 end
 
+"""
+Function optimizes single variable function using golden section method
+(to find single minimum value)
+"""
+function (svhc::SVGoldenSection)(f, x0; ϵ = 1e-8, maxiter)
+  # Get range based on provided starting point
+  (a, b) = find_min_interval(f, x0)
+  # Iterations
+  i = 0
+  while abs(a - b) >= ϵ && i ≤ maxiter
+    i += 1
+    # Calculate next 2 points
+    x1 = b - (b - a) / goldenRatio
+    x2 = a + (b - a) / goldenRatio
+    # Compare function values from calculated points and determine where minimum is located
+    if f(x1) < f(x2)
+      b = x2
+    else
+      a = x1
+    end
+  end
+  # Get the approximate value and return it
+  result = (a + b) / 2
+  resultY = f(result)
+  return resultY, result
+end
