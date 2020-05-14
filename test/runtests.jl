@@ -8,7 +8,9 @@ key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
+    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
+    (x -> x^4 + 3x^3 + x^2 + sin(x)) => (-4.915216432826815, -1.9712755845857126)
+)
 
 @testset "Single variable optimizers" begin
     @testset "General test for SVOptMethods" begin
@@ -22,6 +24,20 @@ svltf = Dict(
                         end
                     end
                 end
+            end
+        end
+    end
+    @testset "Golden section method test" begin
+        @testset "General test (SVGoldenSection)" begin
+            f, x0, min = x -> x^2, 5.0, 0.0
+            for tolerance in [1e-2, 1e-4, 1e-6]
+                @test isapprox(line_optimize(f, x0; method=mopkg.SVGoldenSection())[1], min, atol=tolerance)
+            end
+        end
+        @testset "Precision test (SVGoldenSection)" begin
+            f, x0, min = x -> x^4 + 3x + 12, 3.0, 9.9557394291
+            for tolerance in [1e-2, 1e-4, 1e-6, 1e-8, 1e-10]
+                @test isapprox(line_optimize(f, x0; method=mopkg.SVGoldenSection())[1], min, atol=tolerance)
             end
         end
     end
