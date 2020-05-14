@@ -42,7 +42,7 @@ svltf = Dict(
 
         @testset "exception" begin
 
-            @test_throws MethodError mopkg.SVPowell(x->1, 6)
+            @test_throws String line_optimize(x->1, 6; method=method::SVOptMethod=mopkg.SVPowell())
 
         end
     end

@@ -66,12 +66,7 @@ function (svpl::SVPowell)(f, x0; ϵ=1e-5, maxiter = 10^6, step=1.0)
             if f(x0)<f(c)
                 a = x0 - step
             end
-            """
-            else
-                a = x0 + 2*step
-                a, c = c, a
-            end
-            """
+            
             b = x0
         end
         i+=1
