@@ -48,7 +48,6 @@ function (svhc::SV_Golden_Search)(f,x0;ϵ,maxiter,R=0.618,xL=50-x0,xU=-xL)
             x2=x1
             x1=xL+ t*(xU-xL)
         else
-            xL=(x1+x2)/2
             xU=xL
         end
         
