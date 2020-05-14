@@ -8,7 +8,8 @@ key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
+    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
+    (x -> x^4 + 4x^2 + 12x + 1) => (-6.0, -1.0))
 
 @testset "Single variable optimizers" begin
     @testset "General test for SVOptMethods" begin
@@ -25,6 +26,20 @@ svltf = Dict(
             end
         end
     end
+    
+    @testset "Newton Raphson _r test" begin
+    	fun = x -> x^4 + 4x^2 + 12x + 1	
+	min = (-6.0, -1.0)
+	tval = [min[2] - 2, min[2] + 3]
+	for stval in tval
+		@testset "Epsilon tests" begin
+			for tolerance in [ 1e-2, 1e-4, 1e-6]
+				@test isapprox(line_optimize(fun, stval; eps=tolerance, method=method::SVOptMethod=mopkg.SVNewtonRaphson_r())[1], min[1], atol=tolerance)
+			end
+		end
+	end
+    end
+
     @testset "Finite differences tests" begin
         for xval in [-π, -π/2, 0, π/2, π]
             @test isapprox(2cos(2xval), mopkg.fdc(x -> sin(2x), xval), atol=1e-5)
