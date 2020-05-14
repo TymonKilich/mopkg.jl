@@ -2,9 +2,9 @@ module mopkg
 
 include("svopt.jl")
 
-function line_optimize(f, x0; eps=1e-3, maxit=1e5, method::SVOptMethod=SVFiboSeach())
+function line_optimize(f, a, b; eps=1e-3, method::SVOptMethod=SVFiboSeach())
     optimizer = method
-    optimizer(f, x0; ϵ=eps, maxiter=maxit)
+    optimizer(f, a, b; eps=eps)
 end
 
 export line_optimize, SVOptMethod
