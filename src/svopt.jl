@@ -2,6 +2,8 @@ abstract type SVOptMethod end
 
 struct SVHillClimb <: SVOptMethod end
 
+using Calculus
+
 "Finite central difference"
 fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
 
@@ -40,7 +42,7 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
     while abs(fn-fs) ≥ ϵ && i ≤ maxiter
         i += 1
         s += step
-        fs = fn
+       fs = fn
         fn = f(s)
         if fn > fs
             step = -step*dampingfactor
@@ -48,4 +50,6 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
     end
     return fn, s
 end
+
+
 
