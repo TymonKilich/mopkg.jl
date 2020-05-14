@@ -8,7 +8,8 @@ key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
+    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
+    (x->x^4+x^3+x^2+sin(x)) => (-0.29506124329088085, -0.5480747372690095))
 
 @testset "Single variable optimizers" begin
     @testset "General test for SVOptMethods" begin
@@ -23,6 +24,26 @@ svltf = Dict(
                     end
                 end
             end
+        end
+    end
+    @testset "Powell optimization tests" begin
+        fun = x->x^4+x^3+x^2+sin(x)
+        min = (-0.29506124329088085, -0.5480747372690095)
+        tval = [min[2] - 2, min[2] + 3]
+        for stval in tval
+            @testset "Epsilon tests" begin
+            
+                for tolerance in [1e-2, 1e-4, 1e-6]
+                    @test isapprox(line_optimize(fun, stval; eps=tolerance, method=method::SVOptMethod=mopkg.SVPowell())[1], min[1], atol=tolerance)
+                end
+            
+            end
+        end
+
+        @testset "exception" begin
+
+            @test_throws String line_optimize(x->1, 6; method=method::SVOptMethod=mopkg.SVPowell())
+
         end
     end
     @testset "Finite differences tests" begin
