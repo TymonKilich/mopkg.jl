@@ -1,6 +1,5 @@
 abstract type SVOptMethod end
 
-struct SVHillClimb <: SVOptMethod end
 struct SVFiboSearch <: SVOptMethod end
 
 "Finite central difference"
@@ -29,31 +28,11 @@ function find_min_interval(f, x0; step=0.1, expandfactor=2.0)
     end
 end
 
-function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
-    x, fp = x0, f(x0)
-    s, fs = x0 + step, f(x0 + step)
-    if fs > fp
-        x, s = s, x
-        fp, fs = fs, fp
-        step = -step
-    end
-    i, fn = 0, Inf
-    while abs(fn-fs) ≥ ϵ && i ≤ maxiter
-        i += 1
-        s += step
-        fs = fn
-        fn = f(s)
-        if fn > fs
-            step = -step*dampingfactor
-        end
-    end
-    return fn, s
-
-function (svhc::SVFiboSearch)(f, a, b, ε=0.01)
+function (svhc::SVFiboSearch)(f, a, b; eps)
     L = b - a
     k = 1
-    #ilość potrzebnych wyliczeń wartości funkcji przy danej dokładności ε
-    FN1 = trunc(Int, 2 * L / ε)
+    #ilość potrzebnych wyliczeń wartości funkcji przy danej dokładności eps
+    FN1 = trunc(Int, 2 * L / eps)
     i = 2
     F = [1, 1]
     while F[i] < FN1
@@ -77,8 +56,5 @@ function (svhc::SVFiboSearch)(f, a, b, ε=0.01)
     end
     
     return a, b
-end
-
-
 end
 
