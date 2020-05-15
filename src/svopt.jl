@@ -1,5 +1,6 @@
 abstract type SVOptMethod end
 
+struct SVFiboSearch <: SVOptMethod end
 struct SVHillClimb <: SVOptMethod end
 
 "Finite central difference"
@@ -49,3 +50,32 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
     return fn, s
 end
 
+function (svhc::SVFiboSearch)(f, a, b; eps)
+    L = b - a
+    k = 1
+    #ilość potrzebnych wyliczeń wartości funkcji przy danej dokładności eps
+    FN1 = trunc(Int, 2 * L / eps)
+    i = 2
+    F = [1, 1]
+    while F[i] < FN1
+        append!(F, F[i] + F[i-1])
+        i = i + 1
+    end
+    N = size(F)[1] - 1
+    while k < N
+        l = F[N - k + 1] / F[N + 1]
+        x1 = a + l
+        x2 = b - l
+        if f(x1) < f(x2)
+            b = x2
+        elseif f(x1) > f(x2)
+            a = x1
+        else
+            a = x1
+            b = x2
+        end
+        k = k + 1
+    end
+    
+    return a, b
+end
