@@ -8,6 +8,7 @@ key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
+    (x -> x^1/2 + x^4) => (-0.1875, -0.5),
     (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
 
 @testset "Single variable optimizers" begin
