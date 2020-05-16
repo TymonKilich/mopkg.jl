@@ -10,7 +10,9 @@ key is function (lambda), value (y, x) in minimum
 
 @testset "Single variable optimizers" begin
     svltf = Dict((x->x^3-x^2-1) => [9.019451852054772e-13, 1.4655712318770249,1,2],
-                (x->x^4-x^3-5) => [8.881784197001252e-16, 1.8239744561689548, 1, 10])
+                (x->x^4-x^3-5) => [8.881784197001252e-16, 1.8239744561689548, 1, 10],
+                (x->x+1) => [-1, -1, -1, 6],
+                (x->x+1) => [-1, -1, 2, 6])
     @testset "Secant Method tests" begin
         for (fun, min) in svltf
             @testset "Epsion tests" begin

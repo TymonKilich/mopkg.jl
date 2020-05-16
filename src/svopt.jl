@@ -53,7 +53,7 @@ end
 function (svhc::SVSecant)(f, a, b; ϵ, maxiter)
     if f(a)*f(b) >= ϵ
         println("secant failed")
-        return
+        return -1 
     end
     
     a_temp = a
@@ -68,7 +68,7 @@ function (svhc::SVSecant)(f, a, b; ϵ, maxiter)
         elseif f(b_temp)*f_g_temp < ϵ
             a_temp = g
             b_temp = b_temp
-        elseif f_g_temp == ϵ
+        elseif f_g_temp == 0
             println("found solution")
             return g
         else
