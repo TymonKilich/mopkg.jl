@@ -10,6 +10,8 @@ key is function (lambda), value (y, x) in minimum
 @testset "Single variable optimizers" begin
 
     svltf2 = Dict((x -> x^3 + x - 4) => [0.0003022503520995201, 1.3788417890561968, -10, 10],
+                  (x -> x^3 + x^2 + x + 1) => [0.0, -1.0, -2, 2],
+                  (x -> x^3) => [0.0, 0.0, -1, 1]
     )
 
     @testset "Secant tests" begin
