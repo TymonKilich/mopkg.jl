@@ -12,8 +12,6 @@ svltf = Dict(
 
 @testset "Single variable optimizers" begin
     @testset "General test for SVOptMethods" begin
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
-    (x -> x^4/7 + 2x^3 + 7x^2 + 15x + 25) => (-86.439730947, -7.78647))
         for (fun, min) in svltf
             tval = [min[2] - 2, min[2] + 3]
             for stval in tval
