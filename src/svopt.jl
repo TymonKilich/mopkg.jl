@@ -74,6 +74,5 @@ function (svms::my_secant)(f, x0, x1; ϵ, iter)
                 end
             end
             return f(xd), xd
-        else println("Can not find a root")
         end
     end
