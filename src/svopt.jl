@@ -1,6 +1,7 @@
 abstract type SVOptMethod end
 
 struct SVHillClimb <: SVOptMethod end
+struct my_secant <: SVOptMethod end
 
 "Finite central difference"
 fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
@@ -49,3 +50,30 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
     return fn, s
 end
 
+function (svms::my_secant)(f, x0, x1; ϵ, iter)
+        xm = 0
+        xd = 0
+        c = 0
+    
+        if(f(x0) * f(x1) < 0)
+            for i = 1:iter
+                xd = (x0 * f(x1) - x1 * f(x0)) / (f(x1) - f(x0))
+                c = f(x0) * f(xd)
+    
+                x0 = x1
+                x1 = xd
+    
+                if(c == 0)
+                    break
+                end
+    
+                xm = (x0 * f(x1) - x1 * f(x0)) / (f(x1) - f(x0))
+    
+                if(abs(xm - xd) < ϵ)
+                    break
+                end
+            end
+            return f(xd), xd
+        else println("Can not find a root")
+        end
+    end

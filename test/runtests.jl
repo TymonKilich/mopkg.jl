@@ -6,11 +6,26 @@ import InteractiveUtils: subtypes
 Single variable global test functions – functions with single global minimum
 key is function (lambda), value (y, x) in minimum
 """
-svltf = Dict(
-    (x -> x^2 - 1) => (-1.0, 0.0),
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
 
 @testset "Single variable optimizers" begin
+
+    svltf2 = Dict((x -> x^3 + x - 4) => [0.0003022503520995201, 1.3788417890561968, -10, 10],
+    )
+
+    @testset "Secant tests" begin
+        for (fun, min) in svltf2
+            @testset "Epsilon tests" begin
+                for tolerance in [1e-2, 1e-3, 1e-4]
+                    @test isapprox(secant_optimize(fun, min[3], min[4]; eps=tolerance, maxit=1e5, method=mopkg.my_secant())[2], min[2], atol=tolerance)
+                end
+            end
+        end
+    end
+
+    svltf = Dict(
+        (x -> x^2 - 1) => (-1.0, 0.0),
+        (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
+    
     @testset "General test for SVOptMethods" begin
         for (fun, min) in svltf
             tval = [min[2] - 2, min[2] + 3]
@@ -18,7 +33,7 @@ svltf = Dict(
                 @testset "Epsilon tests" begin
                     for optim in subtypes(SVOptMethod)
                         for tolerance in [1e-2, 1e-4, 1e-6]
-                            @test isapprox(line_optimize(fun, stval; eps=tolerance, method=optim())[1], min[1], atol=tolerance)
+                            @test isapprox(line_optimize(fun, stval; eps=tolerance, method=mopkg.SVHillClimb())[1], min[1], atol=tolerance)
                         end
                     end
                 end
