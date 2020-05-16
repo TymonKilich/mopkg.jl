@@ -1,6 +1,9 @@
 abstract type SVOptMethod end
 
 struct SVHillClimb <: SVOptMethod end
+struct SVNewton_Raphson <: SVOptMethod end
+
+using Calculus
 
 "Finite central difference"
 fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
@@ -49,3 +52,16 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
     return fn, s
 end
 
+"function minimize function with one variable using Newton_Raphson metod as arguments take function , derivative of this function and start point."
+function (svhc::SVNewton_Raphson)(f, x0; ϵ ,maxiter)
+    x = x0
+    i = 1
+    while (abs(Calculus.derivative(f,x)/Calculus.second_derivative(f,x)) > ϵ) && i < maxiter
+        fp = Calculus.derivative(f,x)
+        fpp = Calculus.second_derivative(f,x)
+	    x = x - fp/fpp
+	    i = i + 1
+	 end
+     fn = f(x)
+    return fn,x
+end
