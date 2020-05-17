@@ -10,9 +10,7 @@ fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
 sfdc(f, x; h=1e-5) = (f(x+h) - 2f(x) + f(x-h))/h^2
 
 "Find bracket with minimum"
-function find_min_interval(f, x0; step=1, expandfactor=2.0)
-#changed step value to integer as approximated interval
-#is much better with integer boundries
+function find_min_interval(f, x0; step=0.1, expandfactor=2.0)
     a, b = x0, x0 + step
     fa, fb = f(a), f(b)
     if fb > fa

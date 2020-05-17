@@ -45,4 +45,8 @@ svltf = Dict(
             end
         end
     end
+    @testset "SVDivInHalf tests" begin
+        @test line_optimize(x -> x^4 + 2sin(x), -10; eps=1e-5, method=subtypes(SVOptMethod)[1]()) == (-1.0500382539343835, -0.7214080810546877)
+        @test line_optimize(x -> x/(x^2+1), -10; eps=1e-5, method=subtypes(SVOptMethod)[1]()) == (-0.4999999999994179, -1.0000015258789068)
+    end
 end
