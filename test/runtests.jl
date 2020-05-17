@@ -8,7 +8,8 @@ key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
+    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
+    (x -> x^4 - x^3) => (-0.10546875, 0.75))
 
 @testset "Single variable optimizers" begin
     @testset "General test for SVOptMethods" begin
@@ -43,5 +44,12 @@ svltf = Dict(
                 @test find_min_interval(fun, stval)[1] ≤ min[2] ≤ find_min_interval(fun, stval)[2]
             end
         end
+    end
+
+    @testset "Interval Halving tests" begin
+        @test isapprox(line_optimize(x -> x^4 + 3sin(x) - 5cos(x), -3; eps=1e-6, method=mopkg.IntervalHalving())[1], -5.767704971789998, atol=1e-6)
+        @test isapprox(line_optimize(x -> x^4 + 3sin(x) - 5cos(x), -3; eps=1e-4, method=mopkg.IntervalHalving())[2], -0.4694335937500014, atol=1e-4)
+        @test isapprox(line_optimize(x -> x^4/exp(x) + x^3, -2; eps=1e-4, method=mopkg.IntervalHalving())[1], -0.026997173144902332, atol=1e-4)
+        @test isapprox(line_optimize(x -> x^4/exp(x) + x^3, -2; eps=1e-3, method=mopkg.IntervalHalving())[2], -0.4368164062500013, atol=1e-3)
     end
 end
