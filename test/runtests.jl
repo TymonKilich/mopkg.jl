@@ -8,7 +8,7 @@ key is function (lambda), value (y, x) in minimum
 svltf = Dict( 
     (x -> x^2 - 1) => (-1.0, 0.0),
     (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
-    (x -> x^4 + 3x^3 + x^2 + sin(x))=> (-4.915216432826826,-1.971275676169661)) 
+    (x -> x^4 + 3x^3 + x^2 + sin(x))=> (-4.915216432826826,-1.971275676169661, 0)) 
   
 @testset "Single variable optimizers" begin 
     @testset "General test for SVOptMethods" begin 
@@ -26,4 +26,13 @@ svltf = Dict(
              
         end 
     end 
+end
+
+@testset "My test" begin
+		    f,stval, midval, endval = x-> x^4 +4x +7, -2.0, 1.0, 3.9
+			for optim in subtypes(SVOptMethod)
+			    for tolerance in [1e-2, 1e-4, 1e-6]
+		            @test isapprox(line_optimize(f, stval, midval, endval; eps=tolerance,  method=optim())[1], 4.0, atol=tolerance)
+			    end
+			end
 end
