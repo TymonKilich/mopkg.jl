@@ -106,15 +106,11 @@ function(svhc::SVPowellMinimize)(f, a; h = 0.5, ϵ = 1e-8, nmax = 100)
             end
             if(xm>v[k])
                 v[k] -= xm
-            else
-                v[k] += xm
             end
 
             xm_new = p_xm(f, v)
             xm = xm_new
         end
     end
-
-    return f(xm), xm
 
 end
