@@ -1,6 +1,7 @@
 abstract type SVOptMethod end
 
 struct SVHillClimb <: SVOptMethod end
+struct SVDivInHalf <: SVOptMethod end
 
 "Finite central difference"
 fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
@@ -46,6 +47,47 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
             step = -step*dampingfactor
         end
     end
-    return fn, s
+
+"This method minimizes given function basing on Divide in half algorithm"
+function (svhc::SVDivInHalf)(f, x0, ϵ, maxiter)
+	#needs reforge!
+    b = a^2
+	middle = (a+b)/2
+	diff = b - a
+	iter= 0
+
+	if(a >= b)
+		#a parameter must be smaller than b parameter
+		return
+	end
+
+	while(abs(diff) >= err)
+		iter += 1
+		left = a + diff/4
+		right = b - diff/4
+		if(f(left) < f(middle))
+			b = middle
+			middle = left
+		elseif(f(right) < f(middle))
+			a = middle
+			middle = right
+		else
+			a = left
+			b = right
+		end
+		diff = b - a
+		if(iter > maxiter)
+			#Max iterations exceeded
+			return
+		end
+	end
+	return (f(middle), middle)
 end
 
+
+
+
+
+
+    return fn, s
+end
