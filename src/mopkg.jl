@@ -2,11 +2,11 @@ module mopkg
 
 include("svopt.jl")
 
-function line_optimize(f, x0; eps=1e-3, maxit=1e5, method::SVOptMethod=SVHillClimb())
+function cubic_optimize(f, x0k; eps=0.0001, sig=0.001, method::SVOptMethod=SVInterpol_DSC())
     optimizer = method
-    optimizer(f, x0; ϵ=eps, maxiter=maxit)
+    optimizer(f, x0k; e=eps, s=sig)
 end
 
-export line_optimize, SVOptMethod
+export cubic_optimize, SVOptMethod
 
 end # module
