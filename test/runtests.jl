@@ -23,7 +23,7 @@ svltf2 = Dict(
 	)
 
 
-@testset "Single variable optimizers" begin
+@testset "Metoda Siecznych" begin
 	for (fun, min) in svltf2
 		stval=(min[2]+1)
 		stval1=(min[2]+5)
