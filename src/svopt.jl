@@ -1,51 +1,41 @@
-abstract type SVOptMethod end
+abstract type SVOptMethod end 
 
-struct SVHillClimb <: SVOptMethod end
+struct SVPowell <: SVOptMethod end 
 
-"Finite central difference"
-fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
 
-"Second order central finite difference"
-sfdc(f, x; h=1e-5) = (f(x+h) - 2f(x) + f(x-h))/h^2
+function (powell::SVPowell)(f, x1, x2, x3; epsilon)
+    fx1 = f(x1)
+    fx2 = f(x2 + 0.001)
+    fx3 = f(x3)
 
-"Find bracket with minimum"
-function find_min_interval(f, x0; step=0.1, expandfactor=2.0)
-    a, b = x0, x0 + step
-    fa, fb = f(a), f(b)
-    if fb > fa
-        a, b = b, a
-        fa, fb = fb, fa
-        step = -step
-    end
-    while true
-        c, fc = b + step, f(b + step)
-        if fc > fb
-            return a < c ? (a, c) : (c, a)
-        end
-        a, b = b, c
-        fa, fb = fb, fc
-        step = step*expandfactor
-    end
-end
+    i = 1
+    while x3 - x1 > epsilon
 
-function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
-    x, fp = x0, f(x0)
-    s, fs = x0 + step, f(x0 + step)
-    if fs > fp
-        x, s = s, x
-        fp, fs = fs, fp
-        step = -step
-    end
-    i, fn = 0, Inf
-    while abs(fn-fs) ≥ ϵ && i ≤ maxiter
-        i += 1
-        s += step
-        fs = fn
-        fn = f(s)
-        if fn > fs
-            step = -step*dampingfactor
+        global x4 = 0.5 * ((x2^2 - x3^2) * fx1 + (x3^2 - x1^2)* fx2 + (x1^2 - x2^2) * fx3) /( ((x2 - x3)*fx1 + (x3 - x1)* fx2 +(x1 - x2) * fx3))
+        fx4 = f(x4)
+
+        i= i + 1
+
+        if x4 > x2
+            if fx4 < fx2
+                x1 = x2
+                x2 = x4
+                fx1 = fx2
+                fx2 = fx4
+            else
+                x3 = x4
+                fx3 = fx4
+            end
+        elseif fx4 < fx2
+            x3 = x2
+            x2 = x4
+            fx3 = fx2
+            fx2 = fx4
+        else
+            x1 = x4
+            fx1 = fx4
         end
     end
-    return fn, s
-end
 
+    return f(x4), x4
+end
