@@ -1,13 +1,14 @@
 name = "mopkg"
-uuid = "9dfb0e82-20c4-4dff-96e7-536bec36f45a"
-authors = ["TymonKilich"]
+uuid = "d807b826-8e15-4484-bd8c-e2c336d74c46"
+authors = ["justyniaczek"]
 version = "0.1.0"
 
 [deps]
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 
 [compat]
-julia = "1.4"
+julia = "1.4.1"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
