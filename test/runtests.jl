@@ -8,9 +8,23 @@ key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
+    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
+    (x -> x^2 - 5x) => (-6.25, 2.5))
 
 @testset "Single variable optimizers" begin
+
+    fbsvltf = Dict(
+        (x -> x^2 - 5x) => [2.5,-6.25, -5, 5]
+    )
+
+    @testset "Fibonacci test" begin
+        for(fun,min) in fbsvltf
+            for tolerance in [1e-1, 1e-2, 1e-3]
+                @test isapprox(fibonacci_optimize(fun, min[3], min[4]; eps=tolerance, method=mopkg.SVFiboMethod())[2], min[2], atol=tolerance)
+            end #for
+        end #for
+    end #fibonacci Test
+
     @testset "General test for SVOptMethods" begin
         for (fun, min) in svltf
             tval = [min[2] - 2, min[2] + 3]
@@ -18,7 +32,7 @@ svltf = Dict(
                 @testset "Epsilon tests" begin
                     for optim in subtypes(SVOptMethod)
                         for tolerance in [1e-2, 1e-4, 1e-6]
-                            @test isapprox(line_optimize(fun, stval; eps=tolerance, method=optim())[1], min[1], atol=tolerance)
+                            @test isapprox(line_optimize(fun, stval; eps=tolerance, method=mopkg.SVHillClimb())[1], min[1], atol=tolerance)
                         end
                     end
                 end
