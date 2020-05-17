@@ -4,6 +4,7 @@ import InteractiveUtils: subtypes
 """
 Single variable global test functions – functions with single global minimum
 key is function (lambda), value (y, x) in minimum
+Powell's minimization method
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
