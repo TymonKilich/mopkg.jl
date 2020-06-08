@@ -44,4 +44,8 @@ svltf = Dict(
             end
         end
     end
+    @testset "Tests for bisection" begin
+        @test isapprox(line_optimize(x -> x^2 + 2sin(x) - 2cos(x), -3; eps=1e-6, method=mopkg.IntervalHalving())[1], -2.46842785608456, atol=1e-6)
+        @test isapprox(line_optimize(x -> x^4 + x^3, -2; eps=1e-3, method=mopkg.IntervalHalving())[2], -0.7499999999999997, atol=1e-3)
+    end
 end

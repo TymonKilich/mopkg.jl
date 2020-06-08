@@ -1,6 +1,7 @@
 abstract type SVOptMethod end
 
 struct SVHillClimb <: SVOptMethod end
+struct IntervalHalving <: SVOptMethod end
 
 "Finite central difference"
 fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
@@ -49,3 +50,29 @@ function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
     return fn, s
 end
 
+function (svhc::IntervalHalving)(f, x0; ϵ, maxiter)
+    s, e = find_min_interval(f, x0)
+    mid = (s + e) / 2
+    i = 0
+    d = e - s
+    while abs(d) >= ϵ && i <= maxiter
+        x1 = s  + (d/4)
+        x2 = e - (d/4)
+        y1 = f(x1)
+        y2 = f(x2)
+        ym = f(mid)
+        if y1 < ym
+            e = mid
+            mid = x1
+        elseif y2 < ym
+            s = mid
+            mid = x2
+        else
+            s = x1
+            e = x2
+        end
+        d = e - s
+        i += 1
+    end
+    return f(mid), mid
+end
