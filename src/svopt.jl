@@ -1,6 +1,6 @@
 abstract type SVOptMethod end
 
-struct SVHillClimb <: SVOptMethod end
+struct mini <: SVOptMethod end
 
 "Finite central difference"
 fdc(f, x; h=1e-5) = (f(x+h/2) - f(x-h/2))/h
@@ -28,24 +28,30 @@ function find_min_interval(f, x0; step=0.1, expandfactor=2.0)
     end
 end
 
-function (svhc::SVHillClimb)(f, x0; ϵ, maxiter, dampingfactor=0.5, step=1.0)
-    x, fp = x0, f(x0)
-    s, fs = x0 + step, f(x0 + step)
-    if fs > fp
-        x, s = s, x
-        fp, fs = fs, fp
-        step = -step
-    end
-    i, fn = 0, Inf
-    while abs(fn-fs) ≥ ϵ && i ≤ maxiter
-        i += 1
-        s += step
-        fs = fn
-        fn = f(s)
-        if fn > fs
-            step = -step*dampingfactor
-        end
-    end
-    return fn, s
+function (svhc::mini)(f, a, b; ϵ = 1e-5)
+	ρ = (3-sqrt(5))/2
+	w1 = a + (1.0 - ρ)*(b - a)
+	w2 = a + ρ*(b - a)
+	wL = min(w1, w2)
+	wP = max(w1, w2)
+	a1 = a
+	b1 = b
+	while abs(b1-a1) > ϵ
+		if f(wL) < f(wP)
+			b1 = wP
+			wP = wL
+			wL = b1 - ρ*(b1 - a1)
+		else
+			a1 = wL
+			wL = wP
+			wP = a1 + ρ*(b1 - a1)
+		end
+		wP1, wL1 = wP, wL
+		wL = min(wP1, wL1)
+		wP = max(wP1, wL1)
+	end
+
+return (a1+b1)/2.0, f((a1+b1)/2), a1, b1
+		
 end
 
