@@ -1,5 +1,5 @@
 using mopkg
-import mopkg: fdc, sfdc, find_min_interval
+import mopkg: fdc, sfdc, find_min_interval, fw1, fw2
 using Test
 import InteractiveUtils: subtypes
 """
@@ -42,6 +42,18 @@ svltf = Dict(
             for stval in tval
                 @test find_min_interval(fun, stval)[1] ≤ min[2] ≤ find_min_interval(fun, stval)[2]
             end
+        end
+    end
+
+    @testset "Golden ratio helper functions" begin
+        ab_intervals = [
+            [5,6],
+            [0,0.5],
+            [-1000.1,-3.14],
+            [-10, 200]
+        ]
+        for (a, b) in ab_intervals
+                @test fw1(a, b) - a == b - fw2(a, b)
         end
     end
 end
