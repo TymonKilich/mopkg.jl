@@ -63,7 +63,7 @@ function (svhc::SVGoldenRatio)(f, x0; ϵ, maxiter)
     w1 = fw1(a, b)
     w2 = fw2(a, b)
 
-    while abs(b - a) > ϵ
+    while abs(b - a) ≥ ϵ && k ≤ maxiter
         k += 1
         if f(w1) < f(w2)
             b = w2
