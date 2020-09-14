@@ -1,5 +1,5 @@
 using mopkg
-import mopkg: fdc, sfdc, find_min_interval
+import mopkg: fdc, sfdc, find_min_interval, fw1, fw2
 using Test
 import InteractiveUtils: subtypes
 """
@@ -8,7 +8,9 @@ key is function (lambda), value (y, x) in minimum
 """
 svltf = Dict(
     (x -> x^2 - 1) => (-1.0, 0.0),
-    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083))
+    (x -> x^2/3 + 2x - sin(x)) => (-3.423528818, -3.99083),
+    (x -> (x-1)^2*10 + 10) => (10, 1)
+    )
 
 @testset "Single variable optimizers" begin
     @testset "General test for SVOptMethods" begin
@@ -42,6 +44,18 @@ svltf = Dict(
             for stval in tval
                 @test find_min_interval(fun, stval)[1] ≤ min[2] ≤ find_min_interval(fun, stval)[2]
             end
+        end
+    end
+
+    @testset "Golden ratio helper functions" begin
+        ab_intervals = [
+            [5,6],
+            [0,0.5],
+            [-1000.1,-3.14],
+            [-10, 200]
+        ]
+        for (a, b) in ab_intervals
+                @test fw1(a, b) - a == b - fw2(a, b)
         end
     end
 end
